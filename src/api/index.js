@@ -9,6 +9,22 @@ export const reqCategorys = (parentId) => ajax('/manage/category/list', { parent
 export const reqAddCategorys = ({ categoryName, parentId }) => ajax('/manage/category/add', { categoryName, parentId }, 'POST')
 export const reqUpdateCategorys = ({ categoryId, categoryName }) => ajax('/manage/category/update', { categoryId, categoryName }, 'POST')
 
+export const reqProducts = ({ pageNum, pageSize }) => ajax('/manage/product/list', { pageNum, pageSize })
+
+export const reqSearchProducts = ({ pageNum, pageSize, searchName, searchType }) => ajax('/manage/product/search', {
+    pageNum,
+    pageSize,
+    [searchType]: searchName
+})
+
+export const reqCategory = (categoryId) => ajax('/manage/category/info', { categoryId })
+
+export const reqUpdateStatus = ({ productId, status }) => ajax('/manage/product/updateStatus', { productId, status }, 'POST')
+
+export const reqDeleteImg = (name) => ajax('/manage/img/delete', { name }, 'POST')
+
+export const reqAddOrUpdateProduct = (product) => ajax('/manage/product/'+(product._id?'update':'add'), product, "POST")
+// export const reqUpdateProduct = (product) => ajax('/manage/product/update', product, 'POST')
 export const reqWeather = city => {
     return new Promise((resolve, reject) => {
         axios.get(

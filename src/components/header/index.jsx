@@ -16,7 +16,7 @@ class Header extends Component {
         weather: ''
     }
     getTime = () => {
-        this.intervalId=setInterval(() => {
+        this.intervalId = setInterval(() => {
             const currentTime = formateDate(Date.now())
             this.setState({ currentTime })
         }, 1000)
@@ -32,7 +32,7 @@ class Header extends Component {
             if (item.key === path) {
                 title = item.title
             } else if (item.children) {
-                const cItem = item.children.find(cItem => cItem.key === path)
+                const cItem = item.children.find(cItem => path.indexOf(cItem.key) === 0)
                 if (cItem) {
                     title = cItem.title
                 }

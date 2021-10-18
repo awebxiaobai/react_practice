@@ -12,6 +12,7 @@ export default function ajax(url,data={},type='GET'){
             promise=axios.post(url,data)
         }
         promise.then((responce)=>{
+            // console.log(responce)
             resolve(responce.data)
         }).catch((err)=>{
             message.error('请求出错了'+err.message)
