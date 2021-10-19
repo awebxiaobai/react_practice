@@ -3,7 +3,7 @@ import axios from "axios";
 import ajax from "./ajax";
 
 export const reqLogin = (username, password) => ajax('/login', { username, password }, 'POST')
-export const reqAddUser = user => ajax('/manage/user', user, 'POST')
+// export const reqAddUser = user => ajax('/manage/user', user, 'POST')
 
 export const reqCategorys = (parentId) => ajax('/manage/category/list', { parentId })
 export const reqAddCategorys = ({ categoryName, parentId }) => ajax('/manage/category/add', { categoryName, parentId }, 'POST')
@@ -34,6 +34,10 @@ export const reqAddRole = (roleName) => ajax('/manage/role/add', { roleName }, '
 export const reqUpdateRole = (role) => ajax('/manage/role/update', role, "POST")
 
 export const reqUsers = () => ajax('/manage/user/list')
+
+export const reqDeleteUser = (userId) => ajax('/manage/user/delete', { userId }, 'POST')
+
+export const reqAddUser=(user)=>ajax('/manage/user/'+(user._id?'update':'add'),user,'POST')
 
 export const reqWeather = city => {
     return new Promise((resolve, reject) => {

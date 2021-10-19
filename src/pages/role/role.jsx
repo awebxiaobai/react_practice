@@ -12,6 +12,7 @@ import { PAGE_SIZE } from '../../utils/constants'
 import { reqAddRole, reqRoles, reqUpdateRole } from '../../api'
 import memoryUtils from '../../utils/memoryUtils'
 import { formateDate } from '../../utils/dateUtils'
+import storageUtils from '../../utils/storageUtils'
 export default class Role extends Component {
     state = {
         roles: [],
@@ -32,12 +33,12 @@ export default class Role extends Component {
             {
                 title: '创建时间',
                 dataIndex: 'create_time',
-                render:(create_time)=>formateDate(create_time)
+                render: (create_time) => formateDate(create_time)
             },
             {
                 title: '授权时间',
                 dataIndex: 'auth_time',
-                render:formateDate
+                render: formateDate
             },
             {
                 title: '授权人',
@@ -83,20 +84,28 @@ export default class Role extends Component {
     }
     updateRole = async () => {
         this.setState({
-            isShowAuth:false
+            isShowAuth: false
         })
         const role = this.state.role
         const menus = this.auth.current.getMenus()
         role.menus = menus
-        role.auth_name=memoryUtils.user.username
-        role.auth_time=Date.now()
+        role.auth_name = memoryUtils.user.username
+        role.auth_time = Date.now()
         const result = await reqUpdateRole(role)
-        if(result.status===0){
-            message.success('设置角色权限成功')
-            // this.getRoles()
-            this.setState({
-                roles:[...this.state.roles]
-            })
+        if (result.status === 0) {
+            if (role._id === memoryUtils.user.role_id) {
+                memoryUtils.user = {}
+                storageUtils.removeUser()
+                this.props.history.replace('/login')
+                message.success('当前用户角色权限修改了,重新登录')
+            } else {
+                message.success('设置角色权限成功')
+                // this.getRoles()
+                this.setState({
+                    roles: [...this.state.roles]
+                })
+            }
+
         }
     }
     UNSAFE_componentWillMount() {
@@ -125,7 +134,15 @@ export default class Role extends Component {
                     dataSource={roles}
                     columns={this.columns}
                     pagination={{ defaultPageSize: PAGE_SIZE }}
-                    rowSelection={{ type: 'radio', selectedRowKeys: [role._id] }}
+                    rowSelection={{
+                        type: 'radio',
+                        selectedRowKeys: [role._id],
+                        onSelect:(role)=>{
+                            this.setState({
+                                role
+                            })
+                        }
+                    }}
                     onRow={this.onRow}
                 />
                 <Modal
