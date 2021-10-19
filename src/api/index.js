@@ -23,8 +23,18 @@ export const reqUpdateStatus = ({ productId, status }) => ajax('/manage/product/
 
 export const reqDeleteImg = (name) => ajax('/manage/img/delete', { name }, 'POST')
 
-export const reqAddOrUpdateProduct = (product) => ajax('/manage/product/'+(product._id?'update':'add'), product, "POST")
+export const reqAddOrUpdateProduct = (product) => ajax('/manage/product/' + (product._id ? 'update' : 'add'), product, "POST")
+
 // export const reqUpdateProduct = (product) => ajax('/manage/product/update', product, 'POST')
+
+export const reqRoles = () => ajax('/manage/role/list')
+
+export const reqAddRole = (roleName) => ajax('/manage/role/add', { roleName }, 'POST')
+
+export const reqUpdateRole = (role) => ajax('/manage/role/update', role, "POST")
+
+export const reqUsers = () => ajax('/manage/user/list')
+
 export const reqWeather = city => {
     return new Promise((resolve, reject) => {
         axios.get(
