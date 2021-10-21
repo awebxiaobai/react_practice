@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button, message } from 'antd'
+import { Form, Icon, Input, Button } from 'antd'
+import { connect } from 'react-redux'
 import './login.less'
 import logo from '../../assets/images/logo.png'
-import { reqLogin } from '../../api'
+import { login } from '../../redux/actions'
+
+/* import { reqLogin } from '../../api'
 import memoryUtils from '../../utils/memoryUtils'
-import storageUtils from '../../utils/storageUtils'
+import storageUtils from '../../utils/storageUtils' */
 import { Redirect } from 'react-router'
 const Item = Form.Item
 class Login extends Component {
@@ -13,20 +16,21 @@ class Login extends Component {
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
                 const { username, password } = values
-                const result = await reqLogin(username, password)
+                /* const result = await reqLogin(username, password)
                 if (result.status === 0) {
                     message.success('登录成功')
                     const user = result.data
                     memoryUtils.user = user
                     storageUtils.saveUser(user)
-                    this.props.history.replace('/')
+                    this.props.history.replace('/home')
 
                 } else {
                     message.error(result.msg)
-                }
+                } */
+                this.props.login(username, password)
             }
-        });
-    };
+        })
+    }
     validatePwd = (rule, value, callback) => {
         if (!value) {
             callback('密码必须输入')
@@ -41,10 +45,12 @@ class Login extends Component {
         }
     }
     render() {
-        const user = memoryUtils.user
+        // const user = memoryUtils.user
+        const user = this.props.user
         if (user && user._id) {
-            return <Redirect to='/'/>
+            return <Redirect to='/home' />
         }
+        const errorMsg = this.props.user.errorMsg
         const form = this.props.form
         const { getFieldDecorator } = form
         return (
@@ -54,6 +60,7 @@ class Login extends Component {
                     <h1>React项目：后台管理系统</h1>
                 </header>
                 <section className='login-content'>
+                    <div className={errorMsg?'error-msg show':'error-msg'}>{errorMsg}</div>
                     <h2>用户登录</h2>
                     <Form onSubmit={this.handleSubmit} className="login-form">
                         <Item>
@@ -98,4 +105,7 @@ class Login extends Component {
     }
 }
 const WrapLogin = Form.create()(Login)
-export default WrapLogin
+export default connect(
+    state => ({ user: state.user }),
+    { login }
+)(WrapLogin)
